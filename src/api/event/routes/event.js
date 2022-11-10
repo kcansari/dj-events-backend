@@ -1,16 +1,9 @@
 "use strict";
 
 /**
- * custom router.
+ * event router
  */
 
-module.exports = {
-  routes: [
-    {
-      method: "GET",
-      path: "/events/me",
-      handler: "event.me",
-      config: {},
-    },
-  ],
-};
+const { createCoreRouter } = require("@strapi/strapi").factories;
+
+module.exports = createCoreRouter("api::event.event");
