@@ -1,50 +1,3 @@
-// path: ./src/api/restaurant/controllers/restaurant.js
-
-// const { createCoreController } = require("@strapi/strapi").factories;
-
-// module.exports = createCoreController("api::event.event", ({ strapi }) => ({
-//   // Method 1: Creating an entirely custom action
-//   // Get logged in users
-//   async me(ctx) {
-//     try {
-//       ctx.body = "ok";
-//       const user = ctx.state.user;
-//       if (!user) {
-//         return ctx.badRequest(null, [
-//           { message: "No authorization header was found" },
-//         ]);
-//       }
-//     } catch (err) {
-//       ctx.body = err;
-//     }
-//   },
-
-//   // Method 2: Wrapping a core action (leaves core logic in place)
-//   async find(ctx) {
-//     // some custom logic here
-//     ctx.query = { ...ctx.query, local: "en" };
-
-//     // Calling the default core action
-//     const { data, meta } = await super.find(ctx);
-
-//     // some more custom logic
-//     meta.date = Date.now();
-
-//     return { data, meta };
-//   },
-
-//   // Method 3: Replacing a core action
-//   async findOne(ctx) {
-//     const { id } = ctx.params;
-//     const { query } = ctx;
-
-//     const entity = await strapi.service("api::event.event").findOne(id, query);
-//     const sanitizedEntity = await this.sanitizeOutput(entity, ctx);
-
-//     return this.transformResponse(sanitizedEntity);
-//   },
-// }));
-
 "use strict";
 
 /**
@@ -54,6 +7,89 @@
 const { createCoreController } = require("@strapi/strapi").factories;
 
 module.exports = createCoreController("api::event.event", ({ strapi }) => ({
+  /**
+   * Create a record.
+   *
+   * @return {Object}
+   */
+
+  async create(ctx) {
+    let entity;
+    if (ctx.is("multipart")) {
+      const { data, files } = parseMultipartData(ctx);
+      data.user = ctx.state.user.id;
+      entity = await strapi.services.events.create(data, { files });
+    } else {
+      ctx.request.body.user = ctx.state.user.id;
+      entity = await strapi.services.events.create(ctx.request.body);
+    }
+    return sanitizeEntity(entity, { model: strapi.models.events });
+  },
+
+  /**
+   * Update a record.
+   *
+   * @return {Object}
+   */
+
+  async update(ctx) {
+    const { id } = ctx.params;
+
+    let entity;
+
+    const [events] = await strapi.services.events.find({
+      id: ctx.params.id,
+      "user.id": ctx.state.user.id,
+    });
+
+    if (!events) {
+      return ctx.unauthorized(`You can't update this entry`);
+    }
+
+    if (ctx.is("multipart")) {
+      const { data, files } = parseMultipartData(ctx);
+      entity = await strapi.services.events.update({ id }, data, {
+        files,
+      });
+    } else {
+      entity = await strapi.services.events.update({ id }, ctx.request.body);
+    }
+
+    return sanitizeEntity(entity, { model: strapi.models.events });
+  },
+
+  /**
+   * Delete a record.
+   *
+   * @return {Object}
+   */
+
+  async delete(ctx) {
+    const { id } = ctx.params;
+
+    let entity;
+
+    const [events] = await strapi.services.events.find({
+      id: ctx.params.id,
+      "user.id": ctx.state.user.id,
+    });
+
+    if (!events) {
+      return ctx.unauthorized(`You can't update this entry`);
+    }
+
+    if (ctx.is("multipart")) {
+      const { data, files } = parseMultipartData(ctx);
+      entity = await strapi.services.events.update({ id }, data, {
+        files,
+      });
+    } else {
+      entity = await strapi.services.events.update({ id }, ctx.request.body);
+    }
+
+    return sanitizeEntity(entity, { model: strapi.models.events });
+  },
+
   // Get logged in users
   async me(ctx) {
     const user = ctx.state.user;
