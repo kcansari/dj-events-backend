@@ -16,7 +16,8 @@
     "@strapi/strapi": "4.4.6",
     "better-sqlite3": "7.4.6",
     "cloudinary": "^1.32.0",
-    "slugify": "^1.6.5"
+    "slugify": "^1.6.5",
+    "strapi-utils": "^3.6.10"
   },
   "author": {
     "name": "A Strapi developer"
