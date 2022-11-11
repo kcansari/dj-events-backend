@@ -3,7 +3,7 @@
 /**
  *  events controller
  */
-const { parseMultipartData, sanitizeEntity } = require("strapi-utils");
+
 const { createCoreController } = require("@strapi/strapi").factories;
 
 module.exports = createCoreController("api::event.event", ({ strapi }) => ({
@@ -20,11 +20,16 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
 
   // Create user event----------------------------------------
   async create(ctx) {
+    // let entity;
+    // ctx.request.body.data.user = ctx.state.user;
+    // entity = await super.create(ctx);
+    // return entity;
     let entity;
     ctx.request.body.data.user = ctx.state.user;
-    entity = await super.create(ctx);
+    entity = await strapi.service("api::event.event").create(ctx.request.body);
     return entity;
   },
+
   /**
    * Update a record.
    *
