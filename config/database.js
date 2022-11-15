@@ -1,13 +1,16 @@
 // path: ./config/env/production/database.js
+const path = require("path");
 
 module.exports = ({ env }) => ({
   connection: {
-    client: "postgres",
+    client: "sqlite",
     connection: {
-      host: `/cloudsql/${env("INSTANCE_CONNECTION_NAME")}`,
-      database: env("DATABASE_NAME"),
-      user: env("DATABASE_USER"),
-      password: env("DATABASE_PASSWORD"),
+      filename: path.join(
+        __dirname,
+        "..",
+        env("DATABASE_FILENAME", ".tmp/data.db")
+      ),
     },
+    useNullAsDefault: true,
   },
 });
