@@ -1,4 +1,4 @@
-// "use strict";
+"use strict";
 
 /**
  *  events controller
@@ -72,7 +72,6 @@ module.exports = createCoreController("api::event.event", ({ strapi }) => ({
   // Get logged in users
   async me(ctx) {
     const user = ctx.state.user;
-
     if (!user) {
       return ctx.badRequest(null, [
         { message: "No authorization header was found" },
