@@ -26,17 +26,7 @@ module.exports = [
       },
     },
   },
-<<<<<<< HEAD
-=======
-  {
-    name: "strapi::cors",
-    config: {
-      enabled: true,
-      headers: "*",
-      origin: "*",
-    },
-  },
->>>>>>> a5ea91ea691264e6ade7af6f5a856a2acb97de49
+
   "strapi::poweredBy",
   {
     name: "strapi::cors",
