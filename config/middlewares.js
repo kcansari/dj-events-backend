@@ -29,7 +29,8 @@ module.exports = [
   {
     name: "strapi::cors",
     config: {
-      origin: ["https://6374c41a728892480d48ef01--djeventskcs.netlify.app"],
+      enabled: false,
+      origin: "*",
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"],
       headers: ["Content-Type", "Authorization", "Origin", "Accept"],
       keepHeaderOnError: true,
